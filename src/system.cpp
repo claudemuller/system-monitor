@@ -13,7 +13,7 @@
 
 // TODO: Return the system's CPU
 Processor& System::Cpu() {
-  //cpu_ = LinuxParser::
+  cpu_ = Processor();
   return cpu_;
 }
 
