@@ -20,7 +20,6 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
-  int id_;
   float prev_idle_;
   float prev_io_wait_;
   float prev_non_idle_;
