@@ -13,7 +13,6 @@
 
 // TODO: Return the system's CPU
 Processor& System::Cpu() {
-  cpu_ = Processor();
   return cpu_;
 }
 
