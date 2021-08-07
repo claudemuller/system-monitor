@@ -94,7 +94,7 @@ std::vector<std::string> LinuxParser::CpuUtilization() { return {}; }
 
 // DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
-  return LinuxParser::Pids().size();
+  return static_cast<int>(LinuxParser::Pids().size());
 }
 
 // DONE: Read and return the number of running processes
@@ -155,8 +155,6 @@ std::string LinuxParser::Uid(int pid) {
 }
 
 // TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-#include <iostream>
 std::string LinuxParser::User(std::string uid) {
   std::string user, _, u;
   std::string line;
