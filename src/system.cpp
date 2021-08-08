@@ -11,7 +11,6 @@
 #include "process.h"
 #include "processor.h"
 
-// TODO: Return the system's CPU
 Processor& System::Cpu() {
   return cpu_;
 }
@@ -30,10 +29,10 @@ std::vector<Process>& System::Processes() {
         );
   }
   std::reverse(processes_.begin(), processes_.end());
+
   return processes_;
 }
 
-// DONE: Return the system's kernel identifier (string)
 std::string System::Kernel() {
   kernel_ = LinuxParser::Kernel();
   return kernel_;
@@ -44,23 +43,19 @@ float System::MemoryUtilization() {
   return LinuxParser::MemoryUtilization();
 }
 
-// DONE: Return the operating system name
 std::string System::OperatingSystem() {
   os_name_ = LinuxParser::OperatingSystem();
   return os_name_;
 }
 
-// DONE: Return the number of processes actively running on the system
 int System::RunningProcesses() {
   return LinuxParser::RunningProcesses();
 }
 
-// DONE: Return the total number of processes on the system
 int System::TotalProcesses() {
   return LinuxParser::TotalProcesses();
 }
 
-// DONE: Return the number of seconds since the system started running
 long int System::UpTime() {
   uptime_ = LinuxParser::UpTime();
   return uptime_;

@@ -2,10 +2,10 @@
 #define PROCESS_H
 
 #include <string>
-/*
-Basic class for Process representation
-It contains relevant attributes as shown below
-*/
+/**
+ * Basic class for Process representation
+ * It contains relevant attributes as shown below
+ */
 class Process {
  public:
   Process(int pid, std::string user, std::string command, float cpu_utilisation, std::string ram, long int uptime);
