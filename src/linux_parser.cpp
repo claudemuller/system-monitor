@@ -85,7 +85,7 @@ float LinuxParser::MemoryUtilization() {
   float mem_used = mem_total - mem_free;
   float buffer_mem = mem_used - (buffers + cached);
   float cached_mem = cached + s_reclaimable - sh_mem;
-  
+
   return  (mem_used + buffer_mem + buffers + cached_mem) / mem_total * 100 / 1000;
 }
 
