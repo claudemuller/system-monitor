@@ -1,7 +1,7 @@
 #include "processor.h"
 #include "./linux_parser.h"
-#include <string>
 #include <cmath>
+#include <string>
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
@@ -35,7 +35,7 @@ float Processor::Utilization() {
   prev_soft_irq_ = stof(soft_irq);
   prev_steal_ = stof(steal);
 
-  float cpu_percentage = fabs(static_cast<float>(total_d - idle_d)/total_d * 5);
+  float cpu_percentage = std::fabs(static_cast<float>(total_d - idle_d)/total_d * 5);
 
   return cpu_percentage;
 }
