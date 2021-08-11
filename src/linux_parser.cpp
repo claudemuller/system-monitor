@@ -8,6 +8,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
+
+#include <iostream>
 
 std::string LinuxParser::OperatingSystem() {
   std::string line;
@@ -57,6 +60,7 @@ std::vector<int> LinuxParser::Pids() {
       pids.push_back(pid);
     }
   }
+  std::cout << pids.size() << std::endl;
 
   return pids;
 }

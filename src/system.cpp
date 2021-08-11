@@ -18,17 +18,9 @@ Processor& System::Cpu() {
 // TODO: Return a container composed of the system's processes
 std::vector<Process>& System::Processes() {
   for (int pid : LinuxParser::Pids()) {
-    processes_.emplace_back(
-        Process(
-            pid,
-            LinuxParser::User(LinuxParser::Uid(pid)),
-            LinuxParser::Command(pid),
-            0.0, //LinuxParser::CpuUtilization(),//pid),
-            LinuxParser::Ram(pid),
-            LinuxParser::UpTime(pid))
-        );
+    processes_.emplace_back(Process(pid));
   }
-  std::reverse(processes_.begin(), processes_.end());
+  std::sort(processes_.begin(), processes_.end());
 
   return processes_;
 }
@@ -57,6 +49,5 @@ int System::TotalProcesses() {
 }
 
 long int System::UpTime() {
-  uptime_ = LinuxParser::UpTime();
-  return uptime_;
+  return LinuxParser::UpTime();
 }
