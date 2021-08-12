@@ -2,11 +2,7 @@
 
 #include <linux_parser.h>
 #include <unistd.h>
-
-#include <cctype>
-#include <sstream>
 #include <string>
-#include <vector>
 
 Process::Process(int pid) : pid_(pid) {
   // Parse the process command.

@@ -45,6 +45,7 @@ long Jiffies();
 long ActiveJiffies();
 long ActiveJiffies(int pid);
 long IdleJiffies();
+std::vector<std::vector<long>> GetCPUStatInfo();
 
 // Processes
 std::string Command(int pid);
