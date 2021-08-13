@@ -1,5 +1,6 @@
-#include <string>
 #include "format.h"
+
+#include <string>
 
 #define SEC_IN_MIN 60
 #define MIN_IN_HOUR 60

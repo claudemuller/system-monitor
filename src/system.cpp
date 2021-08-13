@@ -1,13 +1,8 @@
-#include "system.h"
-
 #include <linux_parser.h>
-#include <unistd.h>
-
-#include <cstddef>
-#include <set>
 #include <string>
 #include <vector>
 
+#include "system.h"
 #include "process.h"
 #include "processor.h"
 
@@ -15,12 +10,16 @@ Processor& System::Cpu() {
   return cpu_;
 }
 
-// TODO: Return a container composed of the system's processes
 std::vector<Process>& System::Processes() {
+  processes_ = {};
+
   for (int pid : LinuxParser::Pids()) {
-    processes_.emplace_back(Process(pid));
+    processes_.emplace_back(pid);
   }
-  std::sort(processes_.begin(), processes_.end());
+
+  std::sort(processes_.begin(), processes_.end(), [](Process& a, Process& b) {
+    return b < a;
+  });
 
   return processes_;
 }
@@ -30,7 +29,6 @@ std::string System::Kernel() {
   return kernel_;
 }
 
-// TODO: Return the system's memory utilization
 float System::MemoryUtilization() {
   return LinuxParser::MemoryUtilization();
 }

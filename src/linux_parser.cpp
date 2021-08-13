@@ -1,16 +1,12 @@
-#include "linux_parser.h"
-
-#include <dirent.h>
 #include <format.h>
 #include <unistd.h>
-
 #include <filesystem>
-#include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
-
 #include <iostream>
+
+#include "linux_parser.h"
 
 template <typename T>
 T getValueByProp(std::string const &prop, std::string const &filename);
@@ -74,36 +70,7 @@ std::vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-//  std::string label, value;
-//  std::string line;
-//  std::ifstream stream(kProcDirectory + kMeminfoFilename);
-//  float mem_total, mem_free, mem_available, buffers, cached, s_reclaimable, sh_mem;
-//
-//  if (stream.is_open()) {
-//    while (std::getline(stream, line)) {
-//      std::istringstream line_stream(line);
-//      line_stream >> label >> value;
-//      if (label == "MemTotal:") mem_total = stof(value);
-//      if (label == "MemFree:") mem_free = stof(value);
-//      if (label == "MemAvailable:") mem_available = stof(value);
-//      if (label == "Buffers:") buffers = stof(value);
-//      if (label == "Cached:") cached = stof(value);
-//      if (label == "SReclaimable:") s_reclaimable = stof(value);
-//      if (label == "Shmem:") {
-//        sh_mem = stof(value);
-//        break;
-//      }
-//    }
-//  }
-//
-//  float mem_used = mem_total - mem_free;
-//  float buffer_mem = mem_used - (buffers + cached);
-//  float cached_mem = cached + s_reclaimable - sh_mem;
-//
-//  return  (mem_used + buffer_mem + buffers + cached_mem) / mem_total * 100 / 1000;
-
   float mem_total, mem_free;
 
   try {
@@ -178,7 +145,6 @@ std::vector<std::vector<long>> LinuxParser::GetCPUStatInfo() {
   return cpus;
 }
 
-// TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::ActiveJiffies() {
   long total = 0;
 
@@ -240,7 +206,6 @@ int LinuxParser::TotalProcesses() {
   return num_procs;
 }
 
-// DONE: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   int num_procs = 0;
 
@@ -290,7 +255,6 @@ std::string LinuxParser::Uid(int pid) {
   return uid;
 }
 
-// TODO: Read and return the user associated with a process
 std::string LinuxParser::User(std::string uid) {
   std::string user, _, u;
   std::string line;
@@ -320,8 +284,7 @@ long LinuxParser::UpTime(int pid) {
   std::replace(line.begin(), line.end(), ':', ' ');
   std::istringstream line_stream(line);
 
-  // The start time for process is at index 22.
-  for(int i = 0; i < 22; i++){
+  for (int i = 0; i < 22; i++) {
     line_stream >> value;
   }
 
@@ -334,7 +297,7 @@ template <typename T>
 T getValueByProp(std::string const &prop, std::string const &filename) {
   T value;
   std::string line, key;
-  bool found;
+  bool found = false;
   std::ifstream file_stream(LinuxParser::kProcDirectory + filename);
 
   if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + filename + "' for reading.");

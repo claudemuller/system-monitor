@@ -8,8 +8,6 @@
 #include "ncurses_display.h"
 #include "system.h"
 
-#define ESC 27
-
 // 50 bars uniformly displayed from 0 - 100 %
 // 2% is one bar(|)
 std::string NCursesDisplay::ProgressBar(const float percent) {
@@ -24,11 +22,13 @@ std::string NCursesDisplay::ProgressBar(const float percent) {
   std::string display{std::to_string(percent * 100).substr(0, 4)};
   if (percent < 0.1 || percent == 1.0)
     display = " " + std::to_string(percent * 100).substr(0, 3);
+
   return result + " " + display + "/100%";
 }
 
 void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   int row{0};
+
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
   mvwprintw(window, ++row, 2, ("Kernel: " + system.Kernel()).c_str());
   mvwprintw(window, ++row, 2, "CPU: ");
@@ -48,6 +48,7 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
       ("Running Processes: " + std::to_string(system.RunningProcesses())).c_str());
   mvwprintw(window, ++row, 2,
             ("Up Time: " + Format::ElapsedTime(system.UpTime())).c_str());
+
   wrefresh(window);
 }
 
@@ -59,6 +60,7 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes, WINDOW* w
   int const ram_column{26};
   int const time_column{35};
   int const command_column{46};
+
   wattron(window, COLOR_PAIR(2));
   mvwprintw(window, ++row, pid_column, "PID");
   mvwprintw(window, row, user_column, "USER");
@@ -67,6 +69,7 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes, WINDOW* w
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
+
   for (int i = 0; i < n; ++i) {
     // Clear the line
     mvwprintw(window, ++row, pid_column, (std::string(window->_maxx-2, ' ').c_str()));
@@ -89,16 +92,12 @@ void NCursesDisplay::Display(System& system, int n) {
   nodelay(stdscr, true);
   cbreak();       // terminate ncurses on ctrl + c
   start_color();  // enable color
-//  raw();
 
   int x_max{getmaxx(stdscr)};
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window = newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 
   while (1) {
-//    char ch = getchar();
-//    if (ch == ESC) endwin();
-
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
@@ -110,5 +109,6 @@ void NCursesDisplay::Display(System& system, int n) {
     refresh();
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
+
   endwin();
 }
