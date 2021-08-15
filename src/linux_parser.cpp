@@ -14,9 +14,7 @@ template <typename T>
 T getValueFromFile(std::string const &filename);
 
 std::string LinuxParser::OperatingSystem() {
-  std::string line;
-  std::string key;
-  std::string value;
+  std::string line, key, value, os_name;
   std::ifstream file_stream(kOSPath);
 
   if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + kOSPath + "' for reading.");
@@ -27,9 +25,14 @@ std::string LinuxParser::OperatingSystem() {
     std::replace(line.begin(), line.end(), '"', ' ');
     std::istringstream line_stream(line);
     while (line_stream >> key >> value) {
-      if (key == "PRETTY_NAME") {
+      if (key == "NAME") {
         std::replace(value.begin(), value.end(), '_', ' ');
-        return value;
+        os_name = value;
+      }
+      if (key == "VERSION") {
+        std::replace(value.begin(), value.end(), '_', ' ');
+        os_name += " " + value;
+        return os_name;
       }
     }
   }
