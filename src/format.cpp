@@ -1,17 +1,27 @@
 #include "format.h"
 
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
-#define SEC_IN_MIN 60
-#define MIN_IN_HOUR 60
+std::string Format::ElapsedTime(long s) {
+  std::chrono::seconds seconds{s};
+  std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(seconds);
 
-std::string Format::ElapsedTime(long seconds) {
-  long min = seconds / SEC_IN_MIN;
-  long sec = seconds % SEC_IN_MIN;
-  long hour = min / MIN_IN_HOUR;
-  min = min % MIN_IN_HOUR;
+  seconds -= std::chrono::duration_cast<std::chrono::seconds>(hours);
 
-  return std::to_string(hour) + ":" + std::to_string(min) + ":" + std::to_string(sec);
+  std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(seconds);
+
+  seconds -= std::chrono::duration_cast<std::chrono::seconds>(minutes);
+
+  std::stringstream ss{};
+
+  ss << std::setw(2) << std::setfill('0') << hours.count() << std::setw(1) << ":"
+  << std::setw(2) << std::setfill('0') << minutes.count() << std::setw(1) << ":"
+  << std::setw(2) << std::setfill('0') << seconds.count();
+
+  return ss.str();
 }
 
 bool Format::IsDigits(const std::string &str) {
