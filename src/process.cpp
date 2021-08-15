@@ -3,12 +3,10 @@
 #include <linux_parser.h>
 #include <unistd.h>
 
-#include <string>
-
 Process::Process(int pid) : pid_(pid) {
   // Parse the process command.
   std::string cmd = LinuxParser::Command(pid_);
-  command_ = cmd.size() <= 40 ? cmd : cmd.substr(0, 39) + "...";
+  command_ = cmd.size() <= 40 ? cmd : cmd.substr(0, 39) + kLineAbbr;
 
   // Extract the user that owns the process.
   std::string uid = LinuxParser::Uid(pid_);

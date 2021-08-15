@@ -18,6 +18,17 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+// Parse strings
+const std::string kMemTotalString{"MemTotal:"};
+const std::string kMemFreeString{"MemFree:"};
+const std::string kProcessString{"processes"};
+const std::string kProcsRunningString{"procs_running"};
+const std::string kVMDataString{"VmData:"};
+const std::string kUidString{"Uid:"};
+const std::string kOSNameString{"NAME"};
+const std::string kOSVersionString{"NAME"};
+const std::string kCPUString{"cpu"};
+
 // System
 float MemoryUtilization();
 long UpTime();
@@ -27,19 +38,6 @@ int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
 
-// CPU
-enum CPUStates {
-  kUser_ = 0,
-  kNice_,
-  kSystem_,
-  kIdle_,
-  kIOwait_,
-  kIRQ_,
-  kSoftIRQ_,
-  kSteal_,
-  kGuest_,
-  kGuestNice_
-};
 std::vector<std::string> CpuUtilization();
 long Jiffies();
 long ActiveJiffies();

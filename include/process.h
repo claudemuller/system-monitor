@@ -2,6 +2,9 @@
 #define PROCESS_H
 
 #include <string>
+
+const std::string kLineAbbr{"..."};
+
 /**
  * Basic class for Process representation
  * It contains relevant attributes as shown below

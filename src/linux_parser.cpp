@@ -28,11 +28,11 @@ std::string LinuxParser::OperatingSystem() {
     std::replace(line.begin(), line.end(), '"', ' ');
     std::istringstream line_stream(line);
     while (line_stream >> key >> value) {
-      if (key == "NAME") {
+      if (key == kOSNameString) {
         std::replace(value.begin(), value.end(), '_', ' ');
         os_name = value;
       }
-      if (key == "VERSION") {
+      if (key == kOSVersionString) {
         std::replace(value.begin(), value.end(), '_', ' ');
         os_name += " " + value;
         return os_name;
@@ -82,8 +82,8 @@ float LinuxParser::MemoryUtilization() {
   float mem_total, mem_free;
 
   try {
-    mem_total = getValueByProp<float>("MemTotal:", kMeminfoFilename);
-    mem_free = getValueByProp<float>("MemFree:", kMeminfoFilename);
+    mem_total = getValueByProp<float>(kMemTotalString, kMeminfoFilename);
+    mem_free = getValueByProp<float>(kMemFreeString, kMeminfoFilename);
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
   }
@@ -145,7 +145,7 @@ std::vector<std::vector<long>> LinuxParser::GetCPUStatInfo() {
   while (getline(file_stream, line)) {
     std::istringstream line_stream(line);
     line_stream >> category;
-    if (category.rfind("cpu", 0) == 0) {
+    if (category.rfind(kCPUString, 0) == 0) {
       line_stream >> user >> nice >> system >> idle >> iowait >> irq >>
           softirq >> steal >> guest >> guest_nice;
       std::vector<long> cpu{user, nice,    system, idle,  iowait,
@@ -212,7 +212,7 @@ int LinuxParser::TotalProcesses() {
   int num_procs = 0;
 
   try {
-    num_procs = getValueByProp<int>("processes", kStatFilename);
+    num_procs = getValueByProp<int>(kProcessString, kStatFilename);
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
   }
@@ -224,7 +224,7 @@ int LinuxParser::RunningProcesses() {
   int num_procs = 0;
 
   try {
-    num_procs = getValueByProp<int>("procs_running", kStatFilename);
+    num_procs = getValueByProp<int>(kProcsRunningString, kStatFilename);
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
   }
@@ -249,8 +249,8 @@ std::string LinuxParser::Ram(int pid) {
   long mb_size = 0;
 
   try {
-    long kb_size =
-        getValueByProp<long>("VmData:", std::to_string(pid) + kStatusFilename);
+    long kb_size = getValueByProp<long>(kVMDataString,
+                                        std::to_string(pid) + kStatusFilename);
     mb_size = kb_size / 1000;
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
@@ -263,7 +263,7 @@ std::string LinuxParser::Uid(int pid) {
   std::string uid;
 
   try {
-    uid = getValueByProp<std::string>("Uid:",
+    uid = getValueByProp<std::string>(kUidString,
                                       std::to_string(pid) + kStatusFilename);
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;

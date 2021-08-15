@@ -2,7 +2,7 @@
 
 #include "./linux_parser.h"
 
-float Processor::Utilization() {
+double Processor::Utilization() {
   prev_active_ = current_active_;
   prev_total_ = current_total_;
   current_active_ = LinuxParser::ActiveJiffies();
