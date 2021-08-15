@@ -1,23 +1,26 @@
-#include <format.h>
-#include <unistd.h>
-#include <filesystem>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <iostream>
-
 #include "linux_parser.h"
 
+#include <format.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <filesystem>
+#include <iostream>
+#include <string>
+#include <vector>
+
 template <typename T>
-T getValueByProp(std::string const &prop, std::string const &filename);
+T getValueByProp(std::string const& prop, std::string const& filename);
 template <typename T>
-T getValueFromFile(std::string const &filename);
+T getValueFromFile(std::string const& filename);
 
 std::string LinuxParser::OperatingSystem() {
   std::string line, key, value, os_name;
   std::ifstream file_stream(kOSPath);
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + kOSPath + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + kOSPath +
+                             "' for reading.");
 
   while (std::getline(file_stream, line)) {
     std::replace(line.begin(), line.end(), ' ', '_');
@@ -48,7 +51,9 @@ std::string LinuxParser::Kernel() {
   std::string file_path = kProcDirectory + kVersionFilename;
   std::ifstream file_stream(file_path);
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + file_path + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + file_path +
+                             "' for reading.");
 
   std::getline(file_stream, line);
   std::istringstream line_stream(line);
@@ -62,7 +67,7 @@ std::string LinuxParser::Kernel() {
 std::vector<int> LinuxParser::Pids() {
   std::vector<int> pids;
 
-  for (const auto & file : std::filesystem::directory_iterator(kProcDirectory)) {
+  for (const auto& file : std::filesystem::directory_iterator(kProcDirectory)) {
     std::string filename = file.path().filename();
     if (file.is_directory() && Format::IsDigits(filename)) {
       int pid = stoi(filename);
@@ -108,7 +113,9 @@ long LinuxParser::ActiveJiffies(int pid) {
   std::string line, value;
   long total = 0;
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + file_path + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + file_path +
+                             "' for reading.");
 
   getline(file_stream, line);
   std::replace(line.begin(), line.end(), ':', ' ');
@@ -131,14 +138,18 @@ std::vector<std::vector<long>> LinuxParser::GetCPUStatInfo() {
   std::ifstream file_stream(file_path);
   std::vector<std::vector<long>> cpus;
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + file_path + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + file_path +
+                             "' for reading.");
 
   while (getline(file_stream, line)) {
     std::istringstream line_stream(line);
     line_stream >> category;
     if (category.rfind("cpu", 0) == 0) {
-      line_stream >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
-      std::vector<long> cpu{user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice};
+      line_stream >> user >> nice >> system >> idle >> iowait >> irq >>
+          softirq >> steal >> guest >> guest_nice;
+      std::vector<long> cpu{user, nice,    system, idle,  iowait,
+                            irq,  softirq, steal,  guest, guest_nice};
       cpus.push_back(cpu);
     }
   }
@@ -225,7 +236,8 @@ std::string LinuxParser::Command(int pid) {
   std::string cmd{};
 
   try {
-    cmd = getValueFromFile<std::string>(std::to_string(pid) + kCmdlineFilename);;
+    cmd = getValueFromFile<std::string>(std::to_string(pid) + kCmdlineFilename);
+    ;
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
   }
@@ -237,7 +249,8 @@ std::string LinuxParser::Ram(int pid) {
   long mb_size = 0;
 
   try {
-    long kb_size = getValueByProp<long>("VmData:", std::to_string(pid) + kStatusFilename);
+    long kb_size =
+        getValueByProp<long>("VmData:", std::to_string(pid) + kStatusFilename);
     mb_size = kb_size / 1000;
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
@@ -250,7 +263,8 @@ std::string LinuxParser::Uid(int pid) {
   std::string uid;
 
   try {
-    uid = getValueByProp<std::string>("Uid:", std::to_string(pid) + kStatusFilename);
+    uid = getValueByProp<std::string>("Uid:",
+                                      std::to_string(pid) + kStatusFilename);
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;
   }
@@ -281,7 +295,9 @@ long LinuxParser::UpTime(int pid) {
   std::ifstream file_stream(file_path);
   std::string line, value;
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + file_path + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + file_path +
+                             "' for reading.");
 
   getline(file_stream, line);
   std::replace(line.begin(), line.end(), ':', ' ');
@@ -297,13 +313,15 @@ long LinuxParser::UpTime(int pid) {
 }
 
 template <typename T>
-T getValueByProp(std::string const &prop, std::string const &filename) {
+T getValueByProp(std::string const& prop, std::string const& filename) {
   T value;
   std::string line, key;
   bool found = false;
   std::ifstream file_stream(LinuxParser::kProcDirectory + filename);
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + filename + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + filename +
+                             "' for reading.");
 
   while (getline(file_stream, line)) {
     std::istringstream line_stream(line);
@@ -322,12 +340,14 @@ T getValueByProp(std::string const &prop, std::string const &filename) {
 }
 
 template <typename T>
-T getValueFromFile(std::string const &filename) {
+T getValueFromFile(std::string const& filename) {
   T value;
   std::string line;
   std::ifstream file_stream(LinuxParser::kProcDirectory + filename);
 
-  if (!file_stream.is_open()) throw std::runtime_error("Could not open file '" + filename + "' for reading.");
+  if (!file_stream.is_open())
+    throw std::runtime_error("Could not open file '" + filename +
+                             "' for reading.");
 
   getline(file_stream, line);
   std::istringstream line_stream(line);

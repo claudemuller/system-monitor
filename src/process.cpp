@@ -1,8 +1,9 @@
+#include "process.h"
+
 #include <linux_parser.h>
 #include <unistd.h>
-#include <string>
 
-#include "process.h"
+#include <string>
 
 Process::Process(int pid) : pid_(pid) {
   // Parse the process command.
@@ -14,9 +15,7 @@ Process::Process(int pid) : pid_(pid) {
   user_ = LinuxParser::User(uid);
 }
 
-int Process::Pid() {
-  return pid_;
-}
+int Process::Pid() { return pid_; }
 
 float Process::CpuUtilization() const {
   long active_jiffies = LinuxParser::ActiveJiffies(pid_);
@@ -25,17 +24,11 @@ float Process::CpuUtilization() const {
   return static_cast<float>(active_jiffies) / static_cast<float>(uptime);
 }
 
-std::string Process::Command() {
-  return command_;
-}
+std::string Process::Command() { return command_; }
 
-std::string Process::Ram() {
-  return LinuxParser::Ram(pid_);
-}
+std::string Process::Ram() { return LinuxParser::Ram(pid_); }
 
-std::string Process::User() {
-  return user_;
-}
+std::string Process::User() { return user_; }
 
 long int Process::UpTime() {
   // Return uptime in secs.
